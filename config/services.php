@@ -34,5 +34,11 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
+    
+    "twitter" => [
+       "APIkey" => env("TWITTER_API_KEY"),
+       "APIsecret" => env("TWITTER_API_SECRET"),
+       "callBackUrl" => env("CALLBACK_URL"),        
+   ],
 
 ];

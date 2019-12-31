@@ -11,6 +11,19 @@
 |
 */
 
+//ログイン認証するためのルーティング
+Route::get('/oauth', 'OAuthController@login');
+
+//Callback用のルーティング
+Route::get('/callback', 'OAuthController@callBack');
+
+//indexのルーティング
+Route::get('/index', 'OAuthController@index');
+
+//logoutのルーティング
+Route::get('/logout', 'OAuthController@logout');
+
+//logout後のリダイレクト先
 Route::get('/', function () {
     return view('welcome');
 });
