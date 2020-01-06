@@ -15,7 +15,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'twitter_id', 'avatar',
+        'id', 
+        'avatar',
+        'name',
+        'screen_name',
+        'access_token',
+        'access_token_secret'
     ];
 
     /**
@@ -24,6 +29,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'remember_token',
+        'remember_token','access_token_secret','access_token_secret'
     ];
 }

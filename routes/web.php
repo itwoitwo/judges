@@ -15,7 +15,7 @@
 Route::get('/oauth', 'OAuthController@login');
 
 //Callback用のルーティング
-Route::get('/callback', 'OAuthController@callBack');
+Route::get('/callBack', 'OAuthController@callBack');
 
 //indexのルーティング
 Route::get('/index', 'OAuthController@index');
@@ -26,4 +26,10 @@ Route::get('/logout', 'OAuthController@logout');
 //logout後のリダイレクト先
 Route::get('/', function () {
     return view('welcome');
+    
+//ユーザー登録
+Route::get('/signup', 'Auth\RegisterController@register')->name('signup.get');
+Route::post('/signup', 'Auth\RegisterController@register')->name('signup.post');
+
+
 });
