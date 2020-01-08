@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Auth;
 
 class OAuthController extends Controller
 {
@@ -22,7 +23,7 @@ class OAuthController extends Controller
     }
     
     
-    public function login(){
+    public function OAuthlogin(){
         $twitter = new TwitterOAuth($this->consumerKey, $this->consumerSecret);
        
         // リクエストトークン取得
@@ -57,7 +58,6 @@ class OAuthController extends Controller
         $accessToken = $connection->oauth('oauth/access_token', array('oauth_token' => $oauth_token, 'oauth_verifier' => $oauth_verifier));
         
         
-        //ユーザー登録
         $twitter = new TwitterOAuth(
         //API Key
         $this->consumerKey,
@@ -68,64 +68,59 @@ class OAuthController extends Controller
         $accessToken['oauth_token_secret']
         );
         
-        //セッションにアクセストークンを登録
+        //ユーザー情報の取得
+        $userInfo = get_object_vars($twitter->get('account/verify_credentials'));
+        $user = User::find($userInfo['id_str']);
+        
+        //セッションにアクセストークン、ユーザー情報を登録
         session()->put('accessToken', $accessToken);
-        
-        $data = get_object_vars($twitter->get('account/verify_credentials'));
-        $user = User::find($data['id_str']);
-        
-        dd($user);
+        session()->put('userInfo', $userInfo);
         
         if($user){
-            if($user->screen_name !== $data['screen_name']){
-                $user->screen_name = $data['screen_name'];
+            if($user->screen_name !== $userInfo['screen_name']){
+                $user->screen_name = $userInfo['screen_name'];
                 $user->save();
             }
         } else {
-        // //ユーザー登録
+            
+        //Validationいる
+        
+        //ユーザー登録
         User::create([
-            'id' => $data['id_str'],
-            'avatar' => $data['profile_image_url'],
-            'name' => $data['name'],
-            'screen_name' => $data['screen_name'],
-            'access_token' => bcrypt($accessToken['oauth_token']),
-            'access_token_secret' => bcrypt($accessToken['oauth_token_secret']),
+            'id' => $userInfo['id_str'],
+            'avatar' => $userInfo['profile_image_url'],
+            'name' => $userInfo['name'],
+            'screen_name' => $userInfo['screen_name'],
+            'password' => bcrypt($accessToken['oauth_token']),
             ]);
         }
-        
-        return redirect('index');
+                return redirect('index');
     }
     
-    public function index(){
-    //セッションからアクセストークン取得
-    $accessToken = session()->get('accessToken');
-
-    //インスタンス生成
-    $twitter = new TwitterOAuth(
-        //API Key
-        $this->consumerKey,
-        //API Secret
-        $this->consumerSecret,
-        //アクセストークン
-        $accessToken['oauth_token'],
-        $accessToken['oauth_token_secret']
-    );
-    
-    //ユーザ情報を取得
-    //'account/verify_credentials'はユーザ情報を取得するためのAPIのリソース
-    // get_object_vars()でオブジェクトの中身をjsonで返す
-    $userInfo = get_object_vars($twitter->get('account/verify_credentials'));
+    public function index()
+    {
+    //セッションからユーザー情報取得
+    $userInfo = session()->get('userInfo');
+    $user = User::find($userInfo['id_str']);
 
     //indexというビューにユーザ情報が入った$userInfoを受け渡す
-    return view('index', ['userInfo' => $userInfo]);
-}
+    return view('index', ['userInfo' => $userInfo], ['user' => $user]);
+    }
 
-    public function logout(){
+    public function logout()
+    {
         //セッションクリア
         session()->flush();
     
-        //OAuthログイン画面にリダイレクト
+        //welcomeにリダイレクト
         return redirect('/');
     }
 
+    public function usershow($screen_name)
+    {
+        $user = User::where('screen_name',$screen_name)->first();
+        return view('users.show', [
+            'user' => $user,
+        ]);
+    }
 }

@@ -12,7 +12,7 @@
 */
 
 //ログイン認証するためのルーティング
-Route::get('/oauth', 'OAuthController@login');
+Route::get('/oauth', 'OAuthController@OAuthlogin')->name('oauth');
 
 //Callback用のルーティング
 Route::get('/callBack', 'OAuthController@callBack');
@@ -23,13 +23,9 @@ Route::get('/index', 'OAuthController@index');
 //logoutのルーティング
 Route::get('/logout', 'OAuthController@logout');
 
-//logout後のリダイレクト先
 Route::get('/', function () {
     return view('welcome');
-    
-//ユーザー登録
-Route::get('/signup', 'Auth\RegisterController@register')->name('signup.get');
-Route::post('/signup', 'Auth\RegisterController@register')->name('signup.post');
-
-
 });
+
+Route::resource('posts','PostsController');
+Route::get('users/{screen_name}', 'OAuthController@usershow');

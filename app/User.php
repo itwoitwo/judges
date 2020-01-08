@@ -19,8 +19,7 @@ class User extends Authenticatable
         'avatar',
         'name',
         'screen_name',
-        'access_token',
-        'access_token_secret'
+        'password',
     ];
 
     /**
@@ -29,6 +28,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'remember_token','access_token_secret','access_token_secret'
+        'remember_token','password'
     ];
+    
+    public function posts()
+    {
+        return $this->hasMany(Post::class,'receive_id');
+    }
 }

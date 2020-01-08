@@ -1,4 +1,4 @@
-@extends('layouts.common')
+@extends('layouts.app')
 @section('content')
     <div class="container">
         <div class="col-sm-offset-2 col-sm-8">
@@ -6,7 +6,8 @@
                 <div class="panel-heading">
                     {{ $userInfo['name'] }}さんの情報
                 </div>
-
+                
+                
                 <div class="panel-body">
                     <!-- User Profile Contents -->
                     <div class="form-horizontal">
@@ -24,6 +25,11 @@
                         <div class="form-group">
                             <strong class="col-sm-3">ユーザ名</strong>
                             <div>{{ $userInfo['name'] }}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <strong class="col-sm-3">id</strong>
+                            <div>{{ $userInfo['id'] }}</div>
                         </div>
 
                         <!-- Screen Name  -->
@@ -64,5 +70,20 @@
                 </div>
             </div>
         </div>
+        
+        <!--テスト-->
+        <h1>メッセージ新規作成ページ</h1>
+
+        <div class="row">
+            <div class="col-6">
+                {!! Form::open(['route' => 'posts.store']) !!}
+                    <div class="form-group">
+                        {!! Form::textarea('content', old('content'), ['class' => 'form-control', 'rows' => '2']) !!}
+                        {!! Form::submit('Post', ['class' => 'btn btn-primary btn-block']) !!}
+                    </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+        
     </div>
 @endsection
