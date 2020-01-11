@@ -28,7 +28,9 @@ Route::get('/', function () {
 });
 
 Route::resource('posts','PostsController');
-Route::get('users/{screen_name}', 'OAuthController@usershow');
+Route::get('users/{screen_name}', 'OAuthController@usershow')->name('show');
 
 Route::post('agree','Post_votesController@agree')->name('vote.agree');
 Route::post('disagree','Post_votesController@disagree')->name('vote.disagree');
+
+Route::get('/followlist', 'OAuthController@followlist');

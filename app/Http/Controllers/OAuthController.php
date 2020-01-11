@@ -124,4 +124,45 @@ class OAuthController extends Controller
             'loginUser' => $loginUser,
         ]);
     }
+    
+    public function followlist()
+    {
+        $accessToken = session()->get('accessToken');
+        
+        $twitter = new TwitterOAuth(
+        //API Key
+        $this->consumerKey,
+        //API Secret
+        $this->consumerSecret,
+        //アクセストークン
+        $accessToken['oauth_token'],
+        $accessToken['oauth_token_secret']
+        );
+        
+        $followlist = get_object_vars($twitter->get('friends/ids'));
+        $errorCheck = isset($followlist['errors']);
+        
+        if($errorCheck){
+            $errors = $followlist['errors'];
+            $errorMessage = $errors[0];
+            
+            return view ('commons.followlist_error',[
+            'errorMessage' => $errorMessage,
+            ]);
+        }else{
+            $followIds = $followlist['ids'];
+            $followUsers =[];
+            foreach($followIds as $id){
+                $followUser = User::find($id);
+                if($followUser){
+                    $followUser = $followUser->toArray();
+                    array_push($followUsers,$followUser);
+                }
+            }
+            
+            return view ('users.followlist',[
+                        'followUsers' => $followUsers,
+                        ]);
+        }
+    }
 }
