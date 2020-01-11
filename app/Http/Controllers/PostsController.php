@@ -14,11 +14,8 @@ class PostsController extends Controller
      * @return \Illuminate\Http\Response
      */
      
-    // 受信箱
     public function index()
     {
-        //セッションからユーザー情報取得
-        $userInfo = session()->get('userInfo');
     
     }
 
@@ -66,7 +63,9 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        
+        return view ('post.show',['post'=>$post]);
     }
 
     /**

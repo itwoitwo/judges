@@ -27,10 +27,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('posts','PostsController');
+Route::post('posts', 'PostsController@store')->name('posts.store');
+Route::get('posts/{id}/', 'PostsController@show')->name('posts.show');
+
 Route::get('users/{screen_name}', 'OAuthController@usershow')->name('show');
 
 Route::post('agree','Post_votesController@agree')->name('vote.agree');
 Route::post('disagree','Post_votesController@disagree')->name('vote.disagree');
 
 Route::get('/followlist', 'OAuthController@followlist');
+Route::get('/messagebox', 'OAuthController@messagebox')->name('messagebox');

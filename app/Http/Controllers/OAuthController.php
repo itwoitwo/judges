@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Post;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
@@ -164,5 +165,13 @@ class OAuthController extends Controller
                         'followUsers' => $followUsers,
                         ]);
         }
+    }
+    
+    public function messagebox()
+    {
+        $loginUser = session()->get('userInfo');
+        $posts = Post::where('receive_id',$loginUser['id_str'])->where('judge','good')->get();
+        
+        return view('users.messagebox', ['posts' => $posts]);
     }
 }
