@@ -42,7 +42,7 @@ class PostsController extends Controller
     {
         $userInfo = session()->get('userInfo');
         $receiveId = $request->receive_id;
-        $receiveUser = User::where('id', $receiveId)->first();
+        $receiveUser = User::find($receiveId);
         $request->merge(['send_id' => $userInfo['id_str']]);
         
         $this->validate($request, [

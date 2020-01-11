@@ -13,4 +13,12 @@ use Illuminate\Support\Facades\Storage;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    
+    public function counts($post) {
+        $count_voted = $post->voted_users()->count();
+
+        return [
+            'count_voted' => $count_voted,
+        ];
+    }    
 }

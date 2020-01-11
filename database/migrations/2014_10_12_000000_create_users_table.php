@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             // id_str
-            $table->integer('id')->unique()->primary()->unsigned();
+            $table->string('id')->primary()->unique();
             // profile_image_url
             $table->string('avatar')->nullable()->unique();
             // 名前 name

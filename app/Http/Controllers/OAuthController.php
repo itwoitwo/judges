@@ -82,9 +82,6 @@ class OAuthController extends Controller
                 $user->save();
             }
         } else {
-            
-        //Validationいる
-        
         //ユーザー登録
         User::create([
             'id' => $userInfo['id_str'],
@@ -118,9 +115,13 @@ class OAuthController extends Controller
 
     public function usershow($screen_name)
     {
-        $user = User::where('screen_name',$screen_name)->first();
+        $loginUser = session()->get('userInfo');
+        $receiveUser = User::where('screen_name',$screen_name)->first();
+        $posts = $receiveUser->posts;
         return view('users.show', [
-            'user' => $user,
+            'receiveUser' => $receiveUser,
+            'posts' => $posts,
+            'loginUser' => $loginUser,
         ]);
     }
 }

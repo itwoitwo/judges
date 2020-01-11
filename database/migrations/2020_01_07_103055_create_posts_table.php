@@ -14,12 +14,11 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('send_id')->unsigned();
-            $table->integer('receive_id')->unsigned()->index();
+            $table->increments('id')->index()->unsigned();
+            $table->string('send_id');
+            $table->string('receive_id')->index();
             $table->string('content');
-            // 0が未判定、1がgood、2がbad
-            $table->integer('judge')->unsigned()->default(0);
+            $table->string('judge')->default('yet');
             $table->timestamps();
             
             //外部キー
