@@ -78,32 +78,34 @@ class OAuthController extends Controller
         session()->put('userInfo', $userInfo);
         
         if($user){
-            if($user->screen_name !== $userInfo['screen_name']){
+            if($user->screen_name != $userInfo['screen_name'] || $user->avatar != $userInfo['profile_image_url_https']){
                 $user->screen_name = $userInfo['screen_name'];
+                $user->avatar = $userInfo['profile_image_url_https'];
                 $user->save();
             }
         } else {
         //ユーザー登録
         User::create([
             'id' => $userInfo['id_str'],
-            'avatar' => $userInfo['profile_image_url'],
+            'avatar' => $userInfo['profile_image_url_https'],
             'name' => $userInfo['name'],
             'screen_name' => $userInfo['screen_name'],
             'password' => bcrypt($accessToken['oauth_token']),
             ]);
         }
-                return redirect('index');
+        $redirect = 'users/' . $userInfo['screen_name'];
+                return redirect($redirect);
     }
     
-    public function index()
-    {
-    //セッションからユーザー情報取得
-    $userInfo = session()->get('userInfo');
-    $user = User::find($userInfo['id_str']);
+    // public function index()
+    // {
+    // //セッションからユーザー情報取得
+    // $userInfo = session()->get('userInfo');
+    // $user = User::find($userInfo['id_str']);
 
-    //indexというビューにユーザ情報が入った$userInfoを受け渡す
-    return view('index', ['userInfo' => $userInfo], ['user' => $user]);
-    }
+    // //indexというビューにユーザ情報が入った$userInfoを受け渡す
+    // return view('index', ['userInfo' => $userInfo], ['user' => $user]);
+    // }
 
     public function logout()
     {
@@ -116,19 +118,20 @@ class OAuthController extends Controller
 
     public function usershow($screen_name)
     {
-        $loginUser = session()->get('userInfo');
+        $userInfo = session()->get('userInfo');
         $receiveUser = User::where('screen_name',$screen_name)->first();
-        $posts = $receiveUser->posts;
+        $posts = $receiveUser->posts()->paginate(10);
         return view('users.show', [
             'receiveUser' => $receiveUser,
             'posts' => $posts,
-            'loginUser' => $loginUser,
+            'userInfo' => $userInfo,
         ]);
     }
     
     public function followlist()
     {
         $accessToken = session()->get('accessToken');
+        $userInfo = session()->get('userInfo');
         
         $twitter = new TwitterOAuth(
         //API Key
@@ -163,15 +166,25 @@ class OAuthController extends Controller
             
             return view ('users.followlist',[
                         'followUsers' => $followUsers,
+                        'userInfo' => $userInfo
                         ]);
         }
     }
     
     public function messagebox()
     {
-        $loginUser = session()->get('userInfo');
-        $posts = Post::where('receive_id',$loginUser['id_str'])->where('judge','good')->get();
+        $userInfo = session()->get('userInfo');
+        $posts = Post::where('receive_id',$userInfo['id_str'])->where('judge','good')->paginate(10);
         
-        return view('users.messagebox', ['posts' => $posts]);
+        return view('users.messagebox', ['posts' => $posts,'userInfo' => $userInfo]);
+    }
+    
+    public function userdestroy()
+    {
+        $userInfo = session()->get('userInfo');
+        $user = User::find($userInfo['id_str']);
+        $user->delete();
+        
+        return redirect('/');
     }
 }

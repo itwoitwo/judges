@@ -9,8 +9,11 @@
         <div class="collapse navbar-collapse" id="nav-bar">
             <ul class="navbar-nav mr-auto"></ul>
             <ul class="navbar-nav">
-                <li class="nav-item"><a href="#" class="nav-link">Signup</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Login</a></li>
+                @if(isset($userInfo))
+                <li class="nav-item"><a href="logout" class="nav-link">ログアウト</a></li>
+                @else
+                <li class="nav-item"><a href="oauth" class="nav-link">登録/ログイン</a></li>
+                @endif
             </ul>
         </div>
     </nav>

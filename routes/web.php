@@ -17,11 +17,8 @@ Route::get('/oauth', 'OAuthController@OAuthlogin')->name('oauth');
 //Callback用のルーティング
 Route::get('/callBack', 'OAuthController@callBack');
 
-//indexのルーティング
-Route::get('/index', 'OAuthController@index');
-
 //logoutのルーティング
-Route::get('/logout', 'OAuthController@logout');
+Route::get('/logout', 'OAuthController@logout')->name('logout');
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,5 +32,6 @@ Route::get('users/{screen_name}', 'OAuthController@usershow')->name('show');
 Route::post('agree','Post_votesController@agree')->name('vote.agree');
 Route::post('disagree','Post_votesController@disagree')->name('vote.disagree');
 
-Route::get('/followlist', 'OAuthController@followlist');
+Route::get('/followlist', 'OAuthController@followlist')->name('followlist');
 Route::get('/messagebox', 'OAuthController@messagebox')->name('messagebox');
+Route::post('/userdestroy', 'OAuthController@userdestroy')->name('userdestroy');

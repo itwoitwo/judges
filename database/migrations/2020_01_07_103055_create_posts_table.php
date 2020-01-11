@@ -22,7 +22,7 @@ class CreatePostsTable extends Migration
             $table->timestamps();
             
             //外部キー
-            $table->foreign('receive_id')->references('id')->on('users');
+            $table->foreign('receive_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
