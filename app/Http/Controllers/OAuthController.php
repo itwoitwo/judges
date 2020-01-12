@@ -105,7 +105,7 @@ class OAuthController extends Controller
 
     public function usershow($screen_name)
     {
-        $userInfo = session()->get('userInfo');;
+        $userInfo = session()->get('userInfo');
         $loginUser = User::find($userInfo['id_str']);
         $loginUserPostIds = $loginUser->posts->pluck('id');
         $loginUserVotedIds = $loginUser->voted_posts->pluck('id');
