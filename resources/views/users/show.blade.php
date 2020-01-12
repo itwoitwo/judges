@@ -11,7 +11,6 @@
             @if($userInfo['id_str'] != $receiveUser->id)
             <h2 class='text-center mt-5 bg-light'>投票所</h2>
                 @foreach ($posts as $post)
-                    @if($post->judge == 'yet' && $post->send_id != $userInfo['id_str'])
                     <ul class = 'list-group'>
                         <li class="media mt-1 mb-1 list-group-item">
                             <div class="media-body d-flex">
@@ -25,7 +24,6 @@
                             </div>
                         </li>
                     </ul>
-                    @endif    
                 @endforeach
                 {{ $posts->links('pagination::bootstrap-4') }}
             @endif
@@ -35,7 +33,7 @@
                         <div class="form-group mt-3">
                             {!! Form::textarea('content', old('content'), ['class' => 'form-control', 'rows' => '5']) !!}
                             {{ Form::hidden('receive_id',$receiveUser->id) }}
-                            {!! Form::submit('Post', ['class' => 'btn btn-primary btn-block mx-auto col-3 mt-1']) !!}
+                            {!! Form::submit('投稿', ['class' => 'btn btn-primary btn-block mx-auto col-3 mt-1']) !!}
                         </div>
                     {!! Form::close() !!}
         @if($userInfo['id_str'] == $receiveUser->id)

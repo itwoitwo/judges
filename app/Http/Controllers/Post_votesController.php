@@ -19,14 +19,14 @@ class Post_votesController extends Controller
         
         $post = Post::find($request->id);
         $count_voted = $post->voted_users()->count();
-        $env_vote = 1;
+        $vote_limit = config('services.vote.vote_limit');
         
-        if($count_voted >= $env_vote){
-            $env_rate = 50; 
+        if($count_voted >= $vote_limit){
+            $agree_rate = config('services.vote.agree_rate');
             $votes = Post_vote::query();
             $count_agree = $votes->where('post_id', $request->id)->where('vote', 'agree')->count();
             
-            if($count_agree / $count_voted * 100 > $env_rate){
+            if($count_agree / $count_voted * 100 > $agree_rate){
                 $post->judge = 'good';
                 $post->save();
             } else {
@@ -52,14 +52,14 @@ class Post_votesController extends Controller
         
         $votes = Post_vote::query();
         $count_agree = $votes->where('post_id', $request->id)->where('vote', 'agree')->count();
-        $env_vote = 1; 
+        $vote_limit = config('services.vote.vote_limit'); 
         
-        if($count_voted >= $env_vote){
-            $env_rate = 50; 
+        if($count_voted >= $vote_limit){
+            $agree_rate = config('services.vote.agree_rate');
             $votes = Post_vote::query();
             $count_agree = $votes->where('post_id', $request->id)->where('vote', 'agree')->count();
             
-            if($count_agree / $count_voted * 100 > $env_rate){
+            if($count_agree / $count_voted * 100 > $agree_rate){
                 $post->judge = 'good';
                 $post->save();
             } else {

@@ -20,9 +20,7 @@ Route::get('/callBack', 'OAuthController@callBack');
 //logoutのルーティング
 Route::get('/logout', 'OAuthController@logout')->name('logout');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'OAuthController@welcome');
 
 Route::post('posts', 'PostsController@store')->name('posts.store');
 Route::get('posts/{id}/', 'PostsController@show')->name('posts.show');

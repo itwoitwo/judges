@@ -96,31 +96,22 @@ class OAuthController extends Controller
         $redirect = 'users/' . $userInfo['screen_name'];
                 return redirect($redirect);
     }
-    
-    // public function index()
-    // {
-    // //セッションからユーザー情報取得
-    // $userInfo = session()->get('userInfo');
-    // $user = User::find($userInfo['id_str']);
-
-    // //indexというビューにユーザ情報が入った$userInfoを受け渡す
-    // return view('index', ['userInfo' => $userInfo], ['user' => $user]);
-    // }
 
     public function logout()
     {
-        //セッションクリア
-        session()->flush();
-    
         //welcomeにリダイレクト
         return redirect('/');
     }
 
     public function usershow($screen_name)
     {
-        $userInfo = session()->get('userInfo');
+        $userInfo = session()->get('userInfo');;
+        $loginUser = User::find($userInfo['id_str']);
+        $loginUserPostIds = $loginUser->posts->pluck('id');
+        $loginUserVotedIds = $loginUser->voted_posts->pluck('id');
+        
         $receiveUser = User::where('screen_name',$screen_name)->first();
-        $posts = $receiveUser->posts()->paginate(10);
+        $posts = $receiveUser->posts()->where('judge', 'yet')->whereNotIn('id',$loginUserPostIds)->whereNotIn('id',$loginUserVotedIds)->paginate(10);
         return view('users.show', [
             'receiveUser' => $receiveUser,
             'posts' => $posts,
@@ -159,8 +150,8 @@ class OAuthController extends Controller
             foreach($followIds as $id){
                 $followUser = User::find($id);
                 if($followUser){
-                    $followUser = $followUser->toArray();
-                    array_push($followUsers,$followUser);
+                    $followUserArray = $followUser->toArray();
+                    array_push($followUsers,$followUserArray);
                 }
             }
             
@@ -186,5 +177,11 @@ class OAuthController extends Controller
         $user->delete();
         
         return redirect('/');
+    }
+    
+    public function welcome()
+    {
+        session()->flush();
+        return view('welcome');
     }
 }

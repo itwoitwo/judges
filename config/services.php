@@ -40,5 +40,9 @@ return [
        "APIsecret" => env("TWITTER_API_SECRET"),
        "callBackUrl" => env("CALLBACK_URL"),        
    ],
-
+    
+    'vote' => [
+        'agree_rate'=>env('AGREE_RATE'),
+        'vote_limit'=>env('VOTE_LIMIT'),
+    ],
 ];
