@@ -97,12 +97,6 @@ class OAuthController extends Controller
                 return redirect($redirect);
     }
 
-    public function logout()
-    {
-        //welcomeにリダイレクト
-        return redirect('/');
-    }
-
     public function usershow($screen_name)
     {
         $userInfo = session()->get('userInfo');
@@ -181,7 +175,18 @@ class OAuthController extends Controller
     
     public function welcome()
     {
-        session()->flush();
+       if(session()->has('userInfo')){
+            $userInfo = session()->get('userInfo');
+            return view('welcome',['userInfo'=>$userInfo]);
+        } else {
         return view('welcome');
+        }
     }
+    
+    public function logout()
+    {
+        session()->flush();
+        return redirect('/');
+    }
+    
 }
